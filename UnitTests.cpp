@@ -114,3 +114,14 @@ TEST_CASE("Two records")
 	CHECK(row[1] == "5");
 	CHECK(row[2] == "6");
 }
+
+TEST_CASE("Double quote encountered in the field")
+{
+	//Arrange
+	std::istringstream str("1,2\"c,3\r\n");
+	csvparser parser(str);
+	CSVRow row;
+
+	//Act
+	CHECK_THROWS_AS(parser.NextRow(row), csvParserException);
+}

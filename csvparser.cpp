@@ -36,6 +36,10 @@ namespace CSVparser
 			return false;
 		}
 	}
+	bool csvparser::IsDQuote()
+	{
+		return m_nextCh == D_QUOTE;
+	}
 	void csvparser::NextChar()
 	{
 		if (!m_src.get(m_nextCh))
@@ -52,6 +56,10 @@ namespace CSVparser
 		std::string field;
 		while (!IsFieldEnd())
 		{
+			if (IsDQuote())
+			{
+				ThrowError("Unexpected double-quote");
+			}
 			field += m_nextCh;
 			NextChar();
 		}
@@ -60,5 +68,11 @@ namespace CSVparser
 		{
 			NextChar();
 		}
+	}
+	void csvparser::ThrowError(const std::string &msg)
+	{
+		std::ostringstream os;
+		os << msg;
+		throw csvParserException(os.str());
 	}
 }
